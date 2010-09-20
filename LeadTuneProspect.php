@@ -5,54 +5,79 @@ define('LT_HOST', 'appraiser.leadtune.com');
 class LeadTuneException extends Exception {}
 
 class LeadTuneProspect {
-  private $auth;
   private $host;
   private $route;
+  private $curl;
 
-  public function __construct($user, $password, $host = LT_HOST) {
-    $this->auth = base64_encode("$user:$password");
+  public function __construct($user, $password, $host = LT_HOST, $curl = NULL) {
     $this->host = $host;
     $this->route = 'http://' . $host . '/prospects';
+    $this->curl =
+        ($curl instanceof LeadTuneCurl) ?
+        $curl :
+        new LeadTuneCurl($user, $password, $host, $this->route);
   }
 
   public function create($attributes) {
-    return $this->curlRequest(NULL, "POST", $attributes);
+    return $this->curl->request(NULL, NULL, "POST", $attributes);
   }
 
   public function read($prospect_id, $organization) {
-    return $this->curlRequest("$prospect_id?organization=$organization");
+    return $this->curl->request($prospect_id, "organization=$organization");
   }
 
   public function update($prospect_id, $attributes) {
     throw new LeadTuneException("Prospect update currently unavailable.");
-    return $this->curlRequest($prospect_id, "PUT", $attributes);
+    return $this->curl->request($prospect_id, NULL, "PUT", $attributes);
   }
 
   public function delete($prospect_id, $organization) {
     throw new LeadTuneException("Prospect deletion currently unavailable.");
-    return $this->curlRequest("$prospect_id?organization=$organization", "DELETE");
+    return $this->curl->request($prospect_id, "organization=$organization", "DELETE");
   }
 
   public function getProspectId($organization, $prospect_ref) {
-    return $this->curlRequest("?organization=$organization&prospect_ref=$prospect_ref");
+    return $this->curl->request(NULL, "organization=$organization&prospect_ref=$prospect_ref");
+  }
+}
+
+class LeadTuneCurl {
+  private $user;
+  private $password;
+  private $host;
+  private $route;
+
+  public function __construct($user, $password, $host, $route) {
+    $this->user = $user;
+    $this->password = $password;
+    $this->host = $host;
+    $this->route = $route;
   }
 
-  private function curlRequest($url, $method = "GET", $data = NULL) {
+  private function generateAuth() {
+    return base64_encode("{$this->user}:{$this->password}");
+  }
+
+  public function request($prospect_id, $query_string = NULL, $method = "GET", $data = NULL) {
     $ch = curl_init();
 
     if (!empty($data)) {
       $data = is_array($data) ? json_encode($data) : $data;
       curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-      $this->jsonParseErrorHandler($data, json_last_error());
+      self::jsonParseErrorHandler($data, json_last_error());
     }
 
-    $url = !empty($url) ? "{$this->route}/$url" : $this->route;
+    $url = $this->route;
+    if (!empty($prospect_id)) $url .= "/$prospect_id";
+    if (!empty($query_string)) $url .= "?$query_string";
+
+    $auth = self::generateAuth();
 
     $header = array(
       "Accept: application/json",
       "Content-Type: application/json",
       "Host: {$this->host}",
-      "Authorization: Basic {$this->auth}"
+      "Authorization: Basic $auth"
     );
 
     $options = array(
