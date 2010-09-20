@@ -68,9 +68,11 @@ class LeadTuneProspect {
 
     $error_code = curl_errno($ch);
     $error_string = curl_error($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
     curl_close($ch);
 
+    $this->curlHttpCodeHandler($http_code);
     $this->curlRequestErrorHandler($error_code, $error_string);
     $this->jsonParseErrorHandler($response, json_last_error());
 
@@ -102,6 +104,34 @@ class LeadTuneProspect {
   private function curlRequestErrorHandler($error_code, $error_string) {
     if (!empty($error_code)) {
       throw new LeadTuneException("Unable to complete request.\n\nReason: curl error $error_code: $error_string");
+    }
+  }
+
+  private function curlHttpCodeHandler($http_code) {
+    switch($http_code) {
+    case 200:
+    case 201:
+      break;
+    case 400:
+      throw new LeadTuneException("400 Bad Request: Your request cannot be understood (e.g., the body is malformed and could not be parsed).");
+      break;
+    case 401:
+      throw new LeadTuneException("401 Unauthorized: You failed to authenticate, or you are not authorized for the requested action.");
+      break;
+    case 403:
+      throw new LeadTuneException("403 Forbidden: Your request was understood, but is not allowed (e.g., you are trying to supply an invalid value or missing a required value).");
+      break;
+    case 404:
+      throw new LeadTuneException("404 Not Found: The resource you requested could not be located (e.g., id did not exist).");
+      break;
+    case 500:
+      throw new LeadTuneException("500 Internal Server Error: Something unexpected went wrong at LeadTune.");
+      break;
+    case 503:
+      throw new LeadTuneException("503 Service Unavailable: The service is offline (e.g., scheduled maintenance).");
+      break;
+    default:
+      throw new LeadTuneException("Unexpected HTTP response: $http_code");
     }
   }
 }
