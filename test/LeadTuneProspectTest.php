@@ -12,7 +12,7 @@ require 'simpletest/autorun.php';
 
 define('LT_TEST_USER', "admin@acme.edu");
 define('LT_TEST_PASSWORD', "admin");
-define('LT_TEST_ROUTE', "http://" . LT_HOST_SANDBOX . "/prospects");
+define('LT_TEST_ROUTE', "https://" . LT_HOST_SANDBOX . "/prospects");
 define('LT_MOCK_TESTS', !(!empty($argv[1]) && ($argv[1] == 'live')));
 
 Mock::generate('LeadTuneCurl');

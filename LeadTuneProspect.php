@@ -19,7 +19,7 @@ class LeadTuneProspect {
    */
   public function __construct($user, $password, $host = LT_HOST, $curl = NULL) {
     $this->host = $host;
-    $this->route = 'http://' . $host . '/prospects';
+    $this->route = 'https://' . $host . '/prospects';
     $this->curl =
         !empty($curl) ?
         $curl :
