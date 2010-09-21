@@ -1,26 +1,30 @@
-BEFORE YOU BEGIN:
+# LeadTune API PHP Library
 
-* Familiarize yourself with the LeadTune API: http://www.leadtune.com/api
+http://github.com/leadtune/leadtune-php
 
-* Learn what factors are and identify the ones relevant to your system http://www.leadtune.com/factors/overview
+Copyright 2010 LeadTune, LLC
 
-INSTALLATION:
+John David Eriksen (mailto:devs@leadtune.com)
 
-* From your system's command line, enter the "test" directory and run the command "php LeadTuneProspects.php". 
-  If this test completes successfully, then your system is able to interact with the LeadTune API. 
+For details about the LeadTune API, see: http://leadtune.com/api
 
-* Place LeadTuneProspect.php in your project's include_path
+## Installation
 
-USAGE:
+From your system's command line, enter the "test" directory and run the command "php LeadTuneProspects.php live".
+If this test completes successfully, then your system is able to interact with the LeadTune API.
 
-  Below is a simple example that demonstrates how to create and retrieve prospects.
+Place LeadTuneProspect.php in your project's include_path.
 
-  $ltp = new LeadTuneProspect(MY_ACCOUNT_USERNAME, MY_ACCOUNT_PASSWORD);
+## Usage
 
-  /**
-   * "organization", "event", and "email" are the minimum factors needed to create a prospect, 
-   * but the more factors you provide, the more accurate the appraisals will be.
-   */
-  $prospect_created = $ltp->create(array("organization" => MY_ORGANIZATION_CODE, "event" => "lead_accepted", "email" => "wanna@learn.edu"));
+Below is a simple example that demonstrates how to create and retrieve prospects.
 
-  $prospect_retrieved = $ltp->read($prospect_created['prospect_id'], MY_ORGANIZATION_CODE);
+    $ltp = new LeadTuneProspect(MY_ACCOUNT_USERNAME, MY_ACCOUNT_PASSWORD);
+
+    /**
+     * "organization", "event", and "email" are the minimum factors needed to create a prospect,
+     * but the more factors you provide, the more accurate the appraisals will be.
+     */
+    $prospect_created = $ltp->create(array("organization" => MY_ORGANIZATION_CODE, "event" => "lead_accepted", "email" => "wanna@learn.edu"));
+
+    $prospect_retrieved = $ltp->read($prospect_created['prospect_id'], MY_ORGANIZATION_CODE);
