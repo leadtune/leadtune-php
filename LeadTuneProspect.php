@@ -1,5 +1,6 @@
 <?php
 
+define('LT_PROTOCOL', 'https://');
 define('LT_HOST', 'appraiser.leadtune.com');
 define('LT_HOST_SANDBOX', 'sandbox-appraiser.leadtune.com');
 
@@ -19,7 +20,7 @@ class LeadTuneProspect {
    */
   public function __construct($user, $password, $host = LT_HOST, $curl = NULL) {
     $this->host = $host;
-    $this->route = 'https://' . $host . '/prospects';
+    $this->route = LT_PROTOCOL . $host . '/prospects';
     $this->curl =
         !empty($curl) ?
         $curl :
@@ -30,7 +31,7 @@ class LeadTuneProspect {
    * Creates a new prospect.
    * Accepts either an array or valid JSON of factors corresponding to one prospect.
    *
-   * See: https://leadtune.com/api/seller#create
+   * See: https://leadtune.com/api/#create
    */
   public function create($attributes) {
     return $this->curl->request(NULL, NULL, "POST", $attributes);
@@ -40,7 +41,7 @@ class LeadTuneProspect {
    * Retrieves an existing prospect
    * Accepts a prospect ID and your organization's organization code.
    *
-   * See: https://leadtune.com/api/seller#read
+   * See: https://leadtune.com/api/#read
    */
   public function read($prospect_id, $organization) {
     return $this->curl->request($prospect_id, "organization=$organization");
@@ -48,27 +49,27 @@ class LeadTuneProspect {
 
   /**
    * Updates an existing prospect.
-   * Currently unimplemented.
+   *
+   * See: https://leadtune.com/api/#update
    */
   public function update($prospect_id, $attributes) {
-    throw new LeadTuneException("Prospect update currently unavailable.");
     return $this->curl->request($prospect_id, NULL, "PUT", $attributes);
   }
 
   /**
    * Deletes an existing prospect.
-   * Currently unimplemented.
+   *
+   * See: https://leadtune.com/api/#delete
    */
   public function delete($prospect_id, $organization) {
-    throw new LeadTuneException("Prospect deletion currently unavailable.");
     return $this->curl->request($prospect_id, "organization=$organization", "DELETE");
   }
 
   /**
-   * Retrives the prospect ID of a prospect given your organization code
+   * Retrieves the prospect ID of a prospect given your organization code
    * and a prospect_ref factor you supplied during prospect creation.
    *
-   * See: https://leadtune.com/api/seller#historical
+   * See: https://leadtune.com/api/#historical
    */
   public function getProspectId($organization, $prospect_ref) {
     return $this->curl->request(NULL, "organization=$organization&prospect_ref=$prospect_ref");
