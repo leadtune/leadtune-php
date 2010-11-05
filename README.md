@@ -1,12 +1,12 @@
 # LeadTune API PHP Library
 
-http://github.com/leadtune/leadtune-php
+<http://github.com/leadtune/leadtune-php>
 
 Copyright 2010 LeadTune, LLC
 
-John David Eriksen (mailto:devs@leadtune.com)
+John David Eriksen (<devs@leadtune.com>)
 
-For details about the LeadTune API, see: http://leadtune.com/api
+For details about the LeadTune API, see: <http://leadtune.com/api>
 
 ## Installation
 
