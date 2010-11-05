@@ -11,8 +11,7 @@ error_reporting(E_ALL & ~E_DEPRECATED);
 require '../LeadTuneProspect.php';
 require 'simpletest/autorun.php';
 
-define('LT_TEST_USER', "admin@acme.edu");
-define('LT_TEST_PASSWORD', "admin");
+define('LT_TEST_API_KEY', "zTtILWKS4segt6vwcffP9T105LUHIHbXhRXPv1jR");
 define('LT_TEST_ROUTE', LT_PROTOCOL . LT_HOST_SANDBOX . "/prospects");
 define('LT_MOCK_TESTS', !(!empty($argv[1]) && ($argv[1] == 'live')));
 
@@ -23,13 +22,21 @@ class LeadTuneProspectTest extends UnitTestCase {
 
   public function setUp() {
     if (LT_MOCK_TESTS) {
-      $this->curl = new MockLeadTuneCurl('mock@mock.com', 'mock', 'mock.com', 'mock.com/prospects');
+      $this->curl = $this->mockLeadTuneCurl();
     }
     else {
-      $this->curl = new LeadTuneCurl(LT_TEST_USER, LT_TEST_PASSWORD, LT_HOST_SANDBOX, LT_TEST_ROUTE);
+      $this->curl = new LeadTuneCurl(LT_TEST_API_KEY, LT_HOST_SANDBOX, LT_TEST_ROUTE);
     }
 
-    $this->ltp = new LeadTuneProspect(LT_TEST_USER, LT_TEST_PASSWORD, LT_HOST_SANDBOX, $this->curl);
+    $this->ltp = new LeadTuneProspect(LT_TEST_API_KEY, LT_HOST_SANDBOX, $this->curl);
+  }
+
+  private function mockLeadTuneCurl() {
+    return new MockLeadTuneCurl('MockMockMockMockMockMockMockMockMockMock', 'mock.com', 'mock.com/prospects');
+  }
+
+  private function fakeLeadTuneProspect($curl = NULL) {
+    return new LeadTuneProspect("FakeFakeFakeFakeFakeFakeFakeFakeFakeFake", "sandbox-appraiser.leadtune.com", $curl);
   }
 
   public function testConstructorValid() {
@@ -37,7 +44,7 @@ class LeadTuneProspectTest extends UnitTestCase {
   }
 
   public function testConstructorInvalid() {
-    $ltp = new LeadTuneProspect("fake@fake.org", "fake", "sandbox-appraiser.leadtune.com");
+    $ltp = $this->fakeLeadTuneProspect();
     $this->assertTrue($ltp instanceof LeadTuneProspect);
   }
 
@@ -45,12 +52,12 @@ class LeadTuneProspectTest extends UnitTestCase {
     $curl = NULL;
 
     if (LT_MOCK_TESTS) {
-      $curl = new MockLeadTuneCurl('mock@mock.com', 'mock', 'mock.com', 'mock.com/prospects');
+      $curl = $this->mockLeadTuneCurl();
       $curl->setReturnValue('request',
         new LeadTuneException("401 Unauthorized: You failed to authenticate, or you are not authorized for the requested action."));
     }
 
-    $ltp = new LeadTuneProspect("fake@fake.org", "fake", "sandbox-appraiser.leadtune.com", $curl);
+    $ltp = $this->fakeLeadTuneProspect($curl);
 
     $message = NULL;
 

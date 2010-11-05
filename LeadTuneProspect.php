@@ -7,24 +7,22 @@ define('LT_HOST_SANDBOX', 'sandbox-appraiser.leadtune.com');
 class LeadTuneException extends Exception {}
 
 class LeadTuneProspect {
-  private $host;
-  private $route;
   public $curl;
 
   /**
-   * All that you need here are your username and password.
+   * All that you need here is your api_key
    * $host and $curl parameters are used for testing and diagnostic purposes only.
    *
    * If you would like to test this class within the testing sandbox, pass in
    * LT_SANDBOX_HOST as the third argument here.
    */
-  public function __construct($user, $password, $host = LT_HOST, $curl = NULL) {
-    $this->host = $host;
-    $this->route = LT_PROTOCOL . $host . '/prospects';
+  public function __construct($api_key, $host = LT_HOST, $curl = NULL) {
+    $host = $host;
+    $route = LT_PROTOCOL . $host . '/prospects';
     $this->curl =
         !empty($curl) ?
         $curl :
-        new LeadTuneCurl($user, $password, $host, $this->route);
+        new LeadTuneCurl($api_key, $host, $route);
   }
 
   /**
@@ -77,20 +75,14 @@ class LeadTuneProspect {
 }
 
 class LeadTuneCurl {
-  private $user;
-  private $password;
+  private $api_key;
   private $host;
   private $route;
 
-  public function __construct($user, $password, $host, $route) {
-    $this->user = $user;
-    $this->password = $password;
+  public function __construct($api_key, $host, $route) {
+    $this->api_key = $api_key;
     $this->host = $host;
     $this->route = $route;
-  }
-
-  private function generateAuth() {
-    return base64_encode("{$this->user}:{$this->password}");
   }
 
   public function request($prospect_id, $query_string = NULL, $method = "GET", $data = NULL) {
@@ -106,13 +98,11 @@ class LeadTuneCurl {
     if (!empty($prospect_id)) $url .= "/$prospect_id";
     if (!empty($query_string)) $url .= "?$query_string";
 
-    $auth = self::generateAuth();
-
     $header = array(
       "Accept: application/json",
       "Content-Type: application/json",
       "Host: {$this->host}",
-      "Authorization: Basic $auth"
+      "X-API-Key: {$this->api_key}"
     );
 
     $options = array(
