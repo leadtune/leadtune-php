@@ -19,7 +19,7 @@ Place LeadTuneProspect.php in your project's include_path.
 
 Below is a simple example that demonstrates how to create and retrieve prospects.
 
-    $ltp = new LeadTuneProspect(MY_ACCOUNT_USERNAME, MY_ACCOUNT_PASSWORD);
+    $ltp = new LeadTuneProspect(MY_ACCOUNT_API_KEY);
 
     /**
      * "organization", "event", and "email" are the minimum factors needed to create a prospect,

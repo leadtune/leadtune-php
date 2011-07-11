@@ -11,7 +11,7 @@ error_reporting(E_ALL & ~E_DEPRECATED);
 require '../LeadTuneProspect.php';
 require 'simpletest/autorun.php';
 
-define('LT_TEST_API_KEY', "zTtILWKS4segt6vwcffP9T105LUHIHbXhRXPv1jR");
+define('LT_TEST_API_KEY', "oCtXorIcdyCBL9BDlGg3netMfm3NF0uwuYdcIhuw");
 define('LT_TEST_ROUTE', LT_PROTOCOL . LT_HOST_SANDBOX . "/prospects");
 define('LT_MOCK_TESTS', !(!empty($argv[1]) && ($argv[1] == 'live')));
 

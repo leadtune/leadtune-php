@@ -14,7 +14,7 @@ class LeadTuneProspect {
    * $host and $curl parameters are used for testing and diagnostic purposes only.
    *
    * If you would like to test this class within the testing sandbox, pass in
-   * LT_SANDBOX_HOST as the third argument here.
+   * LT_SANDBOX_HOST as the second argument here.
    */
   public function __construct($api_key, $host = LT_HOST, $curl = NULL) {
     $host = $host;
